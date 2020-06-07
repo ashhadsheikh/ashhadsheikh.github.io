@@ -1,0 +1,7 @@
+---
+name: Covid Plasma
+tools: [HTML, CSS, Botstrap, Airtable]
+image: ../assets/images/covidplasma.png
+description: An Online database for people to look for plasma donations and help cure the pandemic. 
+external_url: https://covidplasma.pk/ 
+---

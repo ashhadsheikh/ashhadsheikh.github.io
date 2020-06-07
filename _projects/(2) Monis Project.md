@@ -5,16 +5,8 @@ image: ../assets/images/monis.jpg
 description: Monitoring Information System for the office of Frequence Allocation Board
 ---
 
-# The Movies Project
+# Monitoring Information System
 
-The Movies Project is something like **Netflix**, the only difference is that **it's not real**! It doesn't exist! I just created it to demonstrate how the **showcase** page looks like and how you can write whatever you want with full markdown support.
+I have worked on a Monitoring Information System for the office of Frequency Allocation Board which helped to bring the scattered paper based complaint management to a proper workflow based systematic approach. It streamlined the prcess and shortened the complaint duratin from 3 months to a period of 14 days and was deployed nationwide. 
 
-![preview](https://www.sketchappsources.com/resources/source-image/we-were-soldiers-landing-page-dbruggisser.jpg)
-
-## Search Movies
-
-![search](https://www.sketchappsources.com/resources/source-image/microsoft-windows-10-virtual-keyboard-diogo-sousa.png)
-
-<p class="text-center">
-{% include elements/button.html link="https://github.com/YoussefRaafatNasry/portfolYOU" text="Learn More" %}
-</p>
+![preview](../assets/images/monis.jpg)

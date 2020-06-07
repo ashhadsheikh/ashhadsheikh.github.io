@@ -5,16 +5,11 @@ image: ../assets/images/diyeatery.jpeg
 description: Pakistan's first technology powered restaurant. 
 ---
 
-# The Movies Project
+# Pakistan's first Technology run restaurant
 
-The Movies Project is something like **Netflix**, the only difference is that **it's not real**! It doesn't exist! I just created it to demonstrate how the **showcase** page looks like and how you can write whatever you want with full markdown support.
+DIYEatery was pakistan's first technlgy run **Restaurant** which enabled guests to [create their own dishes](https://trending.pk/2018/10/islamabads-new-eatery-lets-you-build-your-own-food-using-an-app/) as per their caloric needs and later add them in their menu, from placing the order to have it served everything was automated using a system I helped develop.
 
-![preview](https://www.sketchappsources.com/resources/source-image/we-were-soldiers-landing-page-dbruggisser.jpg)
-
-## Search Movies
-
-![search](https://www.sketchappsources.com/resources/source-image/microsoft-windows-10-virtual-keyboard-diogo-sousa.png)
-
+The restaurant operated for two years and was later closed due to the unfortunate circumstances created by corona virus pandemic.
 <p class="text-center">
-{% include elements/button.html link="https://github.com/YoussefRaafatNasry/portfolYOU" text="Learn More" %}
+{% include elements/button.html link="https://www.researchsnipers.com/diy-eatery-in-islamabad-lets-you-name-create-your-own-food-through-an-app/" text="Learn More" %}
 </p>
