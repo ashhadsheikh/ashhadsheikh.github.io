@@ -5,6 +5,10 @@ permalink: /about/
 weight: 1
 ---
 
+{% if site.google_analytics and jekyll.environment == 'production' %}
+{% include analytics.html %}
+{% endif %}
+
 # **About Me**
 
 Hi I am **{{ site.author.name }}** :wave:,<br>

@@ -5,5 +5,9 @@ weight: 2
 permalink: /blog/
 ---
 
+{% if site.google_analytics and jekyll.environment == 'production' %}
+{% include analytics.html %}
+{% endif %}
+
 {% include blog/search.html %}
 {% include blog/index.html %}

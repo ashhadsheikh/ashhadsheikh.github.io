@@ -4,3 +4,6 @@ title: Resume
 permalink: /resume/
 weight: 4
 ---
+{% if site.google_analytics and jekyll.environment == 'production' %}
+{% include analytics.html %}
+{% endif %}
