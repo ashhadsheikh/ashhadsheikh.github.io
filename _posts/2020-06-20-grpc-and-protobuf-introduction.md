@@ -10,7 +10,7 @@ Microservices have become increasingly popular among the organisations because o
 Currently REST is a widely adopted standard for services to communicate with each other, since JSON is a human readable data structure it usually takes more bandwidth and each service has to implement their own serializer for consuming this data.
 
 
-gRPC is an open source high performance framework developed by Google used for calling remote procedures. It uses HTTP 2.0 for transporting data in the form of bytes instead of JSON. gRPC is language agnostic and it has support for multiple languages which gives an ability to write different services of a system in different languages.
+gRPC is an open source high performance framework developed by Google used for calling remote procedures. It uses HTTP 2.0 for transporting data in the form of bytes instead of JSON. gRPC is language agnostic and it's support for multiple languages gives an ability to write services in different languages.
 
 In this blog I’ll give an overview on how you can build an API using gRPC and protobuf.
 
@@ -33,7 +33,7 @@ In order to get started with gRPC there are few things that we need to install
 
 ### Code
 
-We’ll create a calculator service which takes the input values along with an operation and returns a result. 
+We’ll create a calculator service which takes input values along with an operation and returns a result. 
 
 Before writing server and client, we first need a contract between client and server which specifies inputs, outputs and methods. We'll create  `calculator.proto` file for this
 ```
@@ -58,22 +58,22 @@ service Calculator {
 }
 ```
 
-The above file informs GoLang that how it should encode and decode the data, and the package we installed earlier will help us generate code using this stub.
+The above file informs GoLang about how it should encode and decode the data, and package we installed earlier will help us generate code using this stub.
 
 Next step is to compile this file using `protoc` compiler that we installed earlier. In order to compile this file run the below command 
 ```
-protoc --proto_path=calculatorpb --proto_path=vendors --go_out=plugins=grpc:calculatorpb calculator.proto
+$ protoc --proto_path=calculatorpb --proto_path=vendors --go_out=plugins=grpc:calculatorpb calculator.proto
 ```
 
 *Note that I have this `vendors` folder in `proto_path` which includes all files that came with `protoc` compiler. You can create a similar folder and specify the path here in the above command.*
 
-When you run the above command, `calculator.pb.go` file will be created under the same folder
+`calculator.pb.go` file will be generated under the same folder upon successful execution
 
 Let's jump to see how the client and server code looks like
 
 #### Server
 
-Server imports the package that we generated earlier from our `proto` file and provides an implementation of the method we specified in the file
+Server imports the package that we generated earlier from our `proto` file and provides an implementation of `Calculate` method
 
 ```
 package main
@@ -131,7 +131,7 @@ func (s *server) Calculate(ctx context.Context, request *calculatorpb.Request) (
 
 ```
 
-Now run the below command for server to start listening for requests
+Run the below command for server to start listening for requests
 ```
 $ go run server/main.go
 ```
@@ -197,12 +197,12 @@ func main() {
 }
 ```
 
-Now open another terminal window and run same command for your client to start listening http requests on port `:9002`
+Open another terminal window and run same command for your client to start listening http requests on port `:9002`
 ```
 go run go-client/main.go
 ```
 
-for E2E testing, open your browser and try calling your endpoint with the params like in example below.
+For E2E testing, open your browser and try calling your endpoint with the params like in example below.
 
 ![](../assets/images/grpc-product.png)
 
