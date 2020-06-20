@@ -210,4 +210,4 @@ In order to test the whole flow end to end, open your browser and try calling yo
 
 ![](../assets/images/grpc-product.png)
 
-I hope the above example will give a basic overview on how to use protobuf and communicate between different services using gRPC. for the complete code you can che this [repo](https://github.com/ashhadsheikh/grpc-demo) and if you have any questions/thoughts/feedback you can reachout via an [email](mailto:ashhadsheikh@hotmail.com).
+I hope the above example will give a basic overview on how to use protobuf and communicate between different services using gRPC. For the complete code you can check this [repo](https://github.com/ashhadsheikh/grpc-demo) and if you have any questions/thoughts/feedback you can reachout via [email](mailto:ashhadsheikh@hotmail.com).
