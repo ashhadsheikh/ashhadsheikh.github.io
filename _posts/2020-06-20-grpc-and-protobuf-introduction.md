@@ -1,5 +1,5 @@
 ---
-title: gRPC and Protbuf
+title: gRPC and Protobuf
 tags: [Microservices, gRPC, HTTP 2.0, Protobuf, GoLang, RPC]
 style: fill
 color: info
