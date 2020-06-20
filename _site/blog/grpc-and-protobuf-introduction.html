@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<!--
+  portfolYOU Jekyll theme by Youssef Raafat
+  Free for personal and commercial use under the MIT license
+  https://github.com/YoussefRaafatNasry/portfolYOU
+-->
+
+<html lang="en" class="h-100">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="I love pursuing beauty and elegance in everything I do. If you have a project that you want to get started, think you need my help with something or just fancy saying hey, then get in touch. Schedule a <a href='https://calendly.com/ashhadsheikh'>meeting</a>.">
+
+  <title>ashhadsheikh</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.0/css/all.css">
+
+  <!-- Bootstrap CSS CDN -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <!-- Animate CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css" type="text/css"/>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/assets/css/style.css" type="text/css">
+
+</head>
+
+
+<body class="d-flex flex-column h-100">
+
+  <main class="flex-shrink-0 container mt-5">
+  <nav class="navbar navbar-expand-lg navbar-light">
+
+  <a class="navbar-brand" href="/"><h5><b>ashhadsheikh</b></h5></a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav ml-auto"><a class="nav-item nav-link " href="/about/">About</a>
+
+      <a class="nav-item nav-link active" href="/blog/">Blog</a>
+
+      <a class="nav-item nav-link " href="/projects/">Projects</a>
+
+      <a class="nav-item nav-link " href="/resume/">Resume</a>
+
+      
+
+    </div>
+  </div>
+
+</nav>
+  <div class="col-lg-10 mx-auto mt-5 post">
+  <h1><b>gRPC and Protbuf</b></h1>
+
+<p class="post-metadata text-muted">
+  20 June 2020 -  
+  <b>6 mins read time</b>
+
+  <br>Tags: 
+    
+    <a class="text-decoration-none no-underline" href="/blog/tags#microservices">
+      <span class="tag badge badge-pill text-primary border border-primary">Microservices</span>
+    </a>
+    
+    <a class="text-decoration-none no-underline" href="/blog/tags#grpc">
+      <span class="tag badge badge-pill text-primary border border-primary">gRPC</span>
+    </a>
+    
+    <a class="text-decoration-none no-underline" href="/blog/tags#http-2-0">
+      <span class="tag badge badge-pill text-primary border border-primary">HTTP 2.0</span>
+    </a>
+    
+    <a class="text-decoration-none no-underline" href="/blog/tags#protobuf">
+      <span class="tag badge badge-pill text-primary border border-primary">Protobuf</span>
+    </a>
+    
+    <a class="text-decoration-none no-underline" href="/blog/tags#golang">
+      <span class="tag badge badge-pill text-primary border border-primary">GoLang</span>
+    </a>
+    
+    <a class="text-decoration-none no-underline" href="/blog/tags#rpc">
+      <span class="tag badge badge-pill text-primary border border-primary">RPC</span>
+    </a>
+    </p>
+
+<p>Microservices have become increasingly popular among the organisations because of benefits they offer, A lot of organisations are moving towards Service Oriented Architecture (SOA) and are breaking their complex monolithic applications into smaller and modular services which gives a liberty to code, test and deploy smaller components of system without having much impact on overall product like no breaking changes and little to no downtime.</p>
+
+<p>Since now instead of a single application there are multiple services who needs to talk to each other in a lot of use cases, they use REST for it because REST is a widely adopted standard.  The problem of using this is that JSON is a human readable data structure and it usually takes more space along with that each service needs to have a serializer to searlize these JSONs before consuming this data.</p>
+
+<h2 id="grpc">gRPC</h2>
+
+<p>gRPC is an open source high performance framework developed by Google used for calling remote procedures. It uses HTTP 2.0 for transporting data and uses bytes instead of a JSON data structure.  A main benefit of gRPC is that it’s language agnostic and it has a support of multiple languages which gives you an ability to write different services of your system in different languages and you’ll be able to communicate with them easily.</p>
+
+<p>In this blog I’ll give an overview on how you can implement an API using gRPC and invoke methods on a different server.</p>
+
+<h3 id="installation">Installation</h3>
+
+<p>In order to get started with gRPC there are few things that we need to install on your machine</p>
+
+<ul>
+  <li>Install protocol buffers compiler, which you can download from their <a href="https://developers.google.com/protocol-buffers">offical page</a> or alternatively your can use this <a href="http://google.github.io/proto-lens/installing-protoc.html">link</a> to download.</li>
+</ul>
+
+<p>To verify that it’s installed correctly, run the following command and you’ll see the version installed.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ protoc --version
+</code></pre></div></div>
+<ul>
+  <li>Now since we’ll be creating services in GoLang we have to fetch the following go packages, which are main libraries for gRPC and protobuf in GoLang</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ go get -u google.golang.org/grpc
+ $ go get -u github.com/golang/protobuf/protoc-gen-go
+</code></pre></div></div>
+
+<p>All the dependencies are now installed and we’re good to start coding our services.</p>
+
+<h3 id="coding">Coding</h3>
+
+<p>For the current tutorial we’ll create a calculator service which takes the input values along with an operation and returns a result by calculating the operation supplied. So we’ll have a server taking inputs and a client requesting the calculation via remote procedure call.</p>
+
+<p>Before writing server and client, we first need a contract between client and server which specifies inputs, outputs and methods, and we’ll write  <code class="language-plaintext highlighter-rouge">calculator.proto</code> file for this, the structure of file looks like the one below</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>syntax = "proto3";
+
+package calculatorpb;
+
+//A request message which'll take two variables as input
+message Request {
+    float value1 = 1;
+    float value2 = 2;
+    string operation = 3;
+}
+
+//Response message which contains result of the operation
+message Response {
+    float result = 1;
+}
+
+service Calculator {
+    rpc Calculate(Request) returns (Response);
+}
+</code></pre></div></div>
+
+<p>The above file which is using a synatx <code class="language-plaintext highlighter-rouge">proto3</code> is a contract between client and server on how the request/response will look like and what server methods client can call remotely. The file tells go that how it should encode and decode the data, and the package we installed earlier will help us generate code using this stub.</p>
+
+<p>Now since our proto file is ready the next step is to go ahead and compile this file using <code class="language-plaintext highlighter-rouge">protoc</code> compiler that we installed earlier. In order to compile this file run the below command</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>protoc --proto_path=calculatorpb --proto_path=vendors --go_out=plugins=grpc:calculatorpb calculator.proto
+</code></pre></div></div>
+
+<p>Note that I have this <code class="language-plaintext highlighter-rouge">vendors</code> folder in <code class="language-plaintext highlighter-rouge">proto_path</code> which includes all the includes file that came with <code class="language-plaintext highlighter-rouge">protoc</code> compiler. You can create a similar folder and specify the path here in the above command.</p>
+
+<p>When you run the above command you’ll see that a <code class="language-plaintext highlighter-rouge">calculator.pb.go</code> file is created under the same folder which the client and server both will import and the server will provide a definition for this method, and client will use a listener to call it.</p>
+
+<p>Let’s jump to see how the client and server code looks like</p>
+
+<h4 id="server">Server</h4>
+
+<p>Now let’s take a look at the server code down below, it imports the package that we generated earlier from our <code class="language-plaintext highlighter-rouge">proto</code> file and provides an implementation of the method we specified in the file and then that it’s registering a gPPC server and serving on port <code class="language-plaintext highlighter-rouge">:3030</code></p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package main
+
+import (
+	"context"
+	"errors"
+	"grpc-demo/calculatorpb"
+	"net"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
+)
+
+type server struct{}
+
+func main() {
+	listener, err := net.Listen("tcp", ":3030")
+	if err != nil {
+		panic(err)
+	}
+
+	srv := grpc.NewServer()
+	calculatorpb.RegisterCalculatorServer(srv, &amp;server{})
+	reflection.Register(srv)
+
+	serverErr := srv.Serve(listener)
+	if serverErr != nil {
+		panic(err)
+	}
+}
+
+func (s *server) Calculate(ctx context.Context, request *calculatorpb.Request) (*calculatorpb.Response, error) {
+	val1, val2 := request.GetValue1(), request.GetValue2()
+	var result float32
+
+	switch request.GetOperation() {
+	case "add":
+		result = val1 + val2
+	case "sub":
+		result = val1 - val2
+	case "mult":
+		result = val1 * val2
+	case "div":
+		if val2 == 0 {
+			return nil, errors.New("division by zero not possible")
+		}
+		result = val1 / val2
+	default:
+		return nil, errors.New("operation not found")
+	}
+
+	return &amp;calculatorpb.Response{Result: result}, nil
+}
+
+</code></pre></div></div>
+
+<p>Now when you run the below command, it’ll start listening to requests that are coming on specified port</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go run server/main.go
+</code></pre></div></div>
+
+<h4 id="client">Client</h4>
+
+<p>Now since our server is up and listening on a port we can create a client in the form of another service which can be in any language and invoke the function remotely that’ll calculate the values for us. For this blog we’ll use a go-client for this as well which initates a lightweight http server and upon recieving requests from external clients over HTTP it’ll parse the request and calculate by invoking the remote method using gRPC client.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>package main
+
+import (
+	"fmt"
+	"grpc-demo/calculatorpb"
+	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc"
+)
+
+func main() {
+	connection, err := grpc.Dial("localhost:3030", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+
+	client := calculatorpb.NewCalculatorClient(connection)
+
+	g := gin.Default()
+	g.GET("calculate/:val1/:op/:val2/", func(ctx *gin.Context) {
+		val1, err := strconv.ParseFloat(ctx.Param("val1"), 64)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Request Paramater val1"})
+			return
+		}
+
+		val2, err := strconv.ParseFloat(ctx.Param("val2"), 64)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Request Paramater val2"})
+			return
+		}
+
+		req := &amp;calculatorpb.Request{Value1: float32(val1), Value2: float32(val2), Operation: ctx.Param("op")}
+		response, err := client.Calculate(ctx, req)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{
+				"error": err,
+			})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, gin.H{
+			"result": fmt.Sprint(response.Result),
+		})
+	})
+
+	runErr := g.Run(":9002")
+	if runErr != nil {
+		fmt.Print("Error running server")
+	}
+}
+</code></pre></div></div>
+
+<p>Now you can open another terminal and run a similar command for your client as well and it’ll start listening an http request on port <code class="language-plaintext highlighter-rouge">:9002</code></p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>go run go-client/main.go
+</code></pre></div></div>
+
+<p>In order to test the whole flow end to end, open your browser and try calling your endpoint with the respective params and you’ll see a response like this.</p>
+
+<p><img src="../assets/images/grpc-product.png" alt="" /></p>
+
+<p>I hope the above example will give a basic overview on how to use protobuf and communicate between different services using gRPC. for the complete code you can che this <a href="https://github.com/ashhadsheikh/grpc-demo">repo</a> and if you have any questions/thoughts/feedback you can reachout via an <a href="mailto:ashhadsheikh@hotmail.com">email</a>.</p>
+
+
+
+</div>
+  </main>
+
+  <footer class="mt-auto py-3 text-center">
+
+  <small class="text-muted mb-2">
+    <i class="fas fa-code"></i> with <i class="fas fa-heart"></i>
+    by <strong>Ashhad Sheikh</strong>
+  </small>
+
+  <div class="container-fluid justify-content-center"><a class="social mx-1"  href="mailto:ashhadsheikh@hotmail.com"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#db4437'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fas fa-envelope fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.github.com/ashhadsheikh"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#333333'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-github fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.linkedin.com/in/ashhadsheikh"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#007bb5'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-linkedin-in fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.instagram.com/ashhadsh_"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#405de6'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-instagram fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.facebook.com/ashhadsheikh"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#3b5998'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-facebook fa-1x"></i>
+    </a><a class="social mx-1"  href="https://www.twitter.com/AshhadDev"
+       style="color: #6c757d"
+       onMouseOver="this.style.color='#1da1f2'"
+       onMouseOut="this.style.color='#6c757d'">
+      <i class="fab fa-twitter fa-1x"></i>
+    </a>
+
+</div><small id="attribution">
+    theme <a href="https://github.com/YoussefRaafatNasry/portfolYOU">portfolYOU</a>
+  </small>
+  
+</footer>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-169292748-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  <!-- GitHub Buttons -->
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+
+<!-- Bootstrap JS CDN -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<!-- wow.js CDN & Activation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/wow/1.1.2/wow.js"></script>
+<script> new WOW().init(); </script>
+
+<!-- Initialize all tooltips -->
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+
+</body>
+
+</html>
